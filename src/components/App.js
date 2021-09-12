@@ -2,12 +2,15 @@ import React, { useState, useEffect } from "react";
 import api from "../utils/Api";
 import Header from "./Header";
 import Main from "./Main";
-import Footer from "./Footer";
 import ImagePopup from "./ImagePopup";
 import EditProfilePopup from "./EditProfilePopup";
 import AddPlacePopup from "./AddPlacePopup";
 import PopupAvatar from "./PopupAvatar";
 import { CurrentUserContext } from "../context/currentUserContext";
+import { Route, Switch } from "react-router-dom";
+import Register from "./Register";
+import Login from "./Login";
+import ProtectedRoute from "./ProtectedRoute";
 
 function App() {
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
@@ -16,6 +19,7 @@ function App() {
   const [selectedCard, setSelectedCard] = useState({});
   const [currentUser, setCurrentUser] = useState({});
   const [cards, setCards] = useState([]);
+  const [loggedIn, setLoggedIn] = useState(false);
 
   useEffect(() => {
     Promise.all([api.getListCard(), api.getUserInfo()])
@@ -33,7 +37,9 @@ function App() {
     api
       .changeLikeCardStatus(card._id, !isLiked)
       .then((newCard) => {
-        setCards((state) => state.map((c) => (c._id === card._id ? newCard : c)));
+        setCards((state) =>
+          state.map((c) => (c._id === card._id ? newCard : c))
+        );
       })
       .catch((err) => {
         console.log(err);
@@ -100,7 +106,7 @@ function App() {
   }
 
   function handleCardClick(card) {
-    setSelectedCard(card); 
+    setSelectedCard(card);
   }
 
   function closeAllPopups() {
@@ -115,19 +121,53 @@ function App() {
       <CurrentUserContext.Provider value={currentUser}>
         <div className="root">
           <Header />
-          <Main
-            onEditAvatar={handleEditAvatarClick}
-            onEditProfile={handleEditProfileClick}
-            onAddPlace={handleAddPlaceClick}
-            onCardClick={handleCardClick}
-            cards={cards}
-            onCardLike={handleCardLike}
-            onCardDelete={handleCardDelete}
+
+          <Switch>
+            <ProtectedRoute
+              component={Main}
+              exact
+              path="/"
+              loggedIn={loggedIn}
+              onEditAvatar={handleEditAvatarClick}
+              onEditProfile={handleEditProfileClick}
+              onAddPlace={handleAddPlaceClick}
+              onCardClick={handleCardClick}
+              cards={cards}
+              onCardLike={handleCardLike}
+              onCardDelete={handleCardDelete}
+            >
+              
+            </ProtectedRoute>
+
+            <Route path="/sign-up">
+              <Register />
+            </Route>
+
+            <Route path="/sign-in">
+              <Login
+                isOpen={true}
+                onClose={closeAllPopups}
+                onUpdateUser={handleUpdateUser}
+              />
+            </Route>
+
+          </Switch>
+
+          <PopupAvatar
+            isOpen={isEditAvatarPopupOpen}
+            onClose={closeAllPopups}
+            onUpdateAvatar={handleUpdateAvatar}
           />
-          <Footer />
-          <PopupAvatar isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups} onUpdateAvatar={handleUpdateAvatar} />
-          <EditProfilePopup isOpen={isEditProfilePopupOpen} onClose={closeAllPopups} onUpdateUser={handleUpdateUser} />
-          <AddPlacePopup isOpen={isAddPlacePopupOpen} onClose={closeAllPopups} onAddPlace={handleAddPlaceSubmit} />
+          <EditProfilePopup
+            isOpen={isEditProfilePopupOpen}
+            onClose={closeAllPopups}
+            onUpdateUser={handleUpdateUser}
+          />
+          <AddPlacePopup
+            isOpen={isAddPlacePopupOpen}
+            onClose={closeAllPopups}
+            onAddPlace={handleAddPlaceSubmit}
+          />
           <ImagePopup card={selectedCard} onClose={closeAllPopups} />
         </div>
       </CurrentUserContext.Provider>

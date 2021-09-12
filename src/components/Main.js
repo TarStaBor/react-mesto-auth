@@ -1,5 +1,6 @@
 import React from "react";
 import Card from "./Card";
+import Footer from "./Footer";
 import { CurrentUserContext } from "../context/currentUserContext";
 
 function Main({ onEditAvatar, onEditProfile, onAddPlace, onCardClick, cards, onCardLike, onCardDelete }) {
@@ -42,6 +43,7 @@ function Main({ onEditAvatar, onEditProfile, onAddPlace, onCardClick, cards, onC
           </ul>
         </section>
       </main>
+      <Footer/>
     </>
   );
 }
