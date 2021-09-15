@@ -37,9 +37,7 @@ function App() {
     api
       .changeLikeCardStatus(card._id, !isLiked)
       .then((newCard) => {
-        setCards((state) =>
-          state.map((c) => (c._id === card._id ? newCard : c))
-        );
+        setCards((state) => state.map((c) => (c._id === card._id ? newCard : c)));
       })
       .catch((err) => {
         console.log(err);
@@ -114,6 +112,7 @@ function App() {
     setIsEditProfilePopupOpen(false);
     setIsAddPlacePopupOpen(false);
     setSelectedCard({});
+    // Попап success/fail
   }
 
   return (
@@ -135,39 +134,20 @@ function App() {
               cards={cards}
               onCardLike={handleCardLike}
               onCardDelete={handleCardDelete}
-            >
-              
-            </ProtectedRoute>
+            ></ProtectedRoute>
 
             <Route path="/sign-up">
-              <Register />
+              <Register onClose={closeAllPopups} />
             </Route>
 
             <Route path="/sign-in">
-              <Login
-                isOpen={true}
-                onClose={closeAllPopups}
-                onUpdateUser={handleUpdateUser}
-              />
+              <Login isOpen={true} onClose={closeAllPopups} onUpdateUser={handleUpdateUser} />
             </Route>
-
           </Switch>
 
-          <PopupAvatar
-            isOpen={isEditAvatarPopupOpen}
-            onClose={closeAllPopups}
-            onUpdateAvatar={handleUpdateAvatar}
-          />
-          <EditProfilePopup
-            isOpen={isEditProfilePopupOpen}
-            onClose={closeAllPopups}
-            onUpdateUser={handleUpdateUser}
-          />
-          <AddPlacePopup
-            isOpen={isAddPlacePopupOpen}
-            onClose={closeAllPopups}
-            onAddPlace={handleAddPlaceSubmit}
-          />
+          <PopupAvatar isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups} onUpdateAvatar={handleUpdateAvatar} />
+          <EditProfilePopup isOpen={isEditProfilePopupOpen} onClose={closeAllPopups} onUpdateUser={handleUpdateUser} />
+          <AddPlacePopup isOpen={isAddPlacePopupOpen} onClose={closeAllPopups} onAddPlace={handleAddPlaceSubmit} />
           <ImagePopup card={selectedCard} onClose={closeAllPopups} />
         </div>
       </CurrentUserContext.Provider>
