@@ -7,20 +7,25 @@ import EditProfilePopup from "./EditProfilePopup";
 import AddPlacePopup from "./AddPlacePopup";
 import PopupAvatar from "./PopupAvatar";
 import { CurrentUserContext } from "../context/currentUserContext";
-import { Route, Switch } from "react-router-dom";
+import { Route, Switch, useHistory } from "react-router-dom";
 import Register from "./Register";
 import Login from "./Login";
 import ProtectedRoute from "./ProtectedRoute";
+import * as Auth from "./Auth";
 
 function App() {
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
+  const [isInfoTooltipOpen, setisInfoTooltipOpen] = useState(false);
   const [selectedCard, setSelectedCard] = useState({});
   const [currentUser, setCurrentUser] = useState({});
   const [cards, setCards] = useState([]);
   const [loggedIn, setLoggedIn] = useState(false);
+  const [userEmail, setUserEmail] = useState("");
+  const history = useHistory();
 
+  // Получаем набор карточек и информацию о пользователе
   useEffect(() => {
     Promise.all([api.getListCard(), api.getUserInfo()])
       .then(([cards, userData]) => {
@@ -32,6 +37,22 @@ function App() {
       });
   }, []);
 
+  // Проверяем авторизацию на сайте
+  useEffect(() => {
+    if (localStorage.getItem("token")) {
+      Auth.getContent(localStorage.token)
+        .then((data) => {
+          setUserEmail(data.data.email);
+          setLoggedIn(true);
+          history.push("/");
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  }, [history]);
+
+  // Добавление лайка
   function handleCardLike(card) {
     const isLiked = card.likes.some((item) => item._id === currentUser._id);
     api
@@ -43,6 +64,8 @@ function App() {
         console.log(err);
       });
   }
+
+  // Удаление карточки
   function handleCardDelete(card) {
     api
       .deleteCard(card._id)
@@ -54,6 +77,7 @@ function App() {
       });
   }
 
+  // Изменение профайла
   function handleUpdateUser({ name, about }) {
     api
       .patchUserInfo({ name, about })
@@ -66,6 +90,7 @@ function App() {
       });
   }
 
+  // Изменение аватара
   function handleUpdateAvatar(url) {
     const data = { avatar: url };
     api
@@ -79,6 +104,7 @@ function App() {
       });
   }
 
+  // Добавление карточки
   function handleAddPlaceSubmit(data) {
     api
       .postCard(data)
@@ -103,6 +129,10 @@ function App() {
     setIsAddPlacePopupOpen(true);
   }
 
+  function handleInfoTooltipClick() {
+    setisInfoTooltipOpen(true);
+  }
+
   function handleCardClick(card) {
     setSelectedCard(card);
   }
@@ -111,15 +141,15 @@ function App() {
     setIsEditAvatarPopupOpen(false);
     setIsEditProfilePopupOpen(false);
     setIsAddPlacePopupOpen(false);
+    setisInfoTooltipOpen(false);
     setSelectedCard({});
-    // Попап success/fail
   }
 
   return (
     <>
       <CurrentUserContext.Provider value={currentUser}>
         <div className="root">
-          <Header />
+          <Header userEmail={userEmail} />
 
           <Switch>
             <ProtectedRoute
@@ -137,11 +167,21 @@ function App() {
             ></ProtectedRoute>
 
             <Route path="/sign-up">
-              <Register onClose={closeAllPopups} />
+              <Register
+                isInfoTooltipOpen={isInfoTooltipOpen}
+                onPost={handleInfoTooltipClick}
+                onClose={closeAllPopups}
+              />
             </Route>
 
             <Route path="/sign-in">
-              <Login isOpen={true} onClose={closeAllPopups} onUpdateUser={handleUpdateUser} />
+              <Login
+                isInfoTooltipOpen={isInfoTooltipOpen}
+                onPost={handleInfoTooltipClick}
+                onLoggedIn={setLoggedIn}
+                setUserEmail={setUserEmail}
+                onClose={closeAllPopups}
+              />
             </Route>
           </Switch>
 

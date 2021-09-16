@@ -1,8 +1,8 @@
 .authorization {
-    max-width: 358px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    color: FFFFFF;
-    margin: auto;
+  max-width: 358px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  color: FFFFFF;
+  margin: auto;
 }

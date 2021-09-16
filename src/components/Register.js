@@ -4,18 +4,21 @@ import InfoTooltip from "./InfoTooltip";
 import { Link, Redirect } from "react-router-dom";
 import * as Auth from "./Auth";
 
-function Register(onClose) {
+function Register({ isInfoTooltipOpen, onPost, onClose }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isSuccess, setIsSuccess] = useState(false);
-  const [isInfoTooltipOpen, setisInfoTooltipOpen] = useState(false);
+  const [isVisiblePassword, setisVisiblePassword] = useState("password");
+
+  function handleVisibleChange() {
+    setisVisiblePassword(isVisiblePassword === "password" ? "text" : "password");
+  }
 
   function handleEmailChange(e) {
     setEmail(e.target.value);
   }
 
   function handlePasswordChange(e) {
-    // setPassword("\u2022".repeat(e.target.value.length));
     setPassword(e.target.value);
   }
 
@@ -23,13 +26,14 @@ function Register(onClose) {
     e.preventDefault();
     Auth.register(email, password).then((res) => {
       if (res) {
+        onPost(true);
         setIsSuccess(true);
-        setisInfoTooltipOpen(true);
       } else {
+        onPost(true);
         setIsSuccess(false);
-        setisInfoTooltipOpen(true);
+        setEmail("");
+        setPassword("");
       }
-      console.log(isSuccess + " статус попапа");
     });
   }
 
@@ -40,9 +44,9 @@ function Register(onClose) {
 
         <form name="" action="#" className="authorization__form" onSubmit={handleSubmit} noValidate>
           <input
-            id="name-input"
+            id="email"
             className="authorization__input"
-            name="name"
+            name="email"
             type="text"
             placeholder="Email"
             value={email}
@@ -54,9 +58,9 @@ function Register(onClose) {
           />
 
           <input
-            id="job-input"
-            name="about"
-            type="text"
+            id="password"
+            name="password"
+            type={isVisiblePassword}
             placeholder="Пароль"
             value={password}
             onChange={handlePasswordChange}
@@ -66,6 +70,14 @@ function Register(onClose) {
             maxLength="200"
             required
           />
+          <h2
+            className="authorization__registered link-opacity"
+            style={{ textAlign: "center" }}
+            onClick={handleVisibleChange}
+          >
+            Показать пароль
+          </h2>
+
           <button type="submit" className="authorization__button link-opacity save-profile">
             Зарегистрироваться
           </button>
@@ -74,8 +86,8 @@ function Register(onClose) {
           Уже зарегистрированы? Войти
         </Link>
       </section>
-      {isSuccess && <Redirect to="sign-in" />}
-      <InfoTooltip isOpen={isInfoTooltipOpen} isSuccess={isSuccess} onClose={onClose} />
+      {isSuccess && !isInfoTooltipOpen && <Redirect to="sign-in" />}
+      <InfoTooltip isInfoTooltipOpen={isInfoTooltipOpen} isSuccess={isSuccess} onClose={onClose} />
     </>
   );
 }
