@@ -28,8 +28,9 @@ function Login({ authorization }) {
   }
 
   return (
-    <section className="authorization">
-      <h2 className="authorization__title">Вход</h2>
+    <>
+      <section className="authorization">
+        <h2 className="authorization__title">Вход</h2>
 
       <form
         name=""
@@ -80,6 +81,7 @@ function Login({ authorization }) {
         </button>
       </form>
     </section>
+    </>
   );
 }
 export default Login;
