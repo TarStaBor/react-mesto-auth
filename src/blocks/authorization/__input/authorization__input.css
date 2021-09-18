@@ -9,14 +9,13 @@
   font-weight: normal;
   font-size: 14px;
   line-height: 1.2;
-  border-bottom: #CCCCCC 2px solid;
+  border-bottom: #cccccc 2px solid;
   background-color: transparent;
-  color: #FFFFFF;
-
+  color: #ffffff;
 }
 
 .authorization__input::placeholder {
-  color: #CCCCCC;
+  color: #cccccc;
 }
 
 .authorization__input:focus {

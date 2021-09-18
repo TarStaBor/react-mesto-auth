@@ -1,16 +1,30 @@
-//Авторизация
 import React, { useState } from "react";
 
-function Login() {
+function Login({ authorization }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isVisiblePassword, setisVisiblePassword] = useState("password");
+
+  function handleVisibleChange() {
+    setisVisiblePassword(
+      isVisiblePassword === "password" ? "text" : "password"
+    );
+  }
 
   function handleEmailChange(e) {
     setEmail(e.target.value);
   }
 
   function handlePasswordChange(e) {
-    setPassword("\u2022".repeat(e.target.value.length));
+    setPassword(e.target.value);
+  }
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    authorization(email, password);
+
+    setEmail("");
+    setPassword("");
   }
 
   return (
@@ -21,13 +35,13 @@ function Login() {
         name=""
         action="#"
         className="authorization__form"
-        //onSubmit={}
+        onSubmit={handleSubmit}
         noValidate
       >
         <input
-          id="name-input"
+          id="email"
           className="authorization__input"
-          name="name"
+          name="email"
           type="text"
           placeholder="Email"
           value={email}
@@ -39,9 +53,9 @@ function Login() {
         />
 
         <input
-          id="job-input"
-          name="about"
-          type="text"
+          id="password"
+          name="password"
+          type={isVisiblePassword}
           placeholder="Пароль"
           value={password}
           onChange={handlePasswordChange}
@@ -51,6 +65,13 @@ function Login() {
           maxLength="200"
           required
         />
+        <h2
+          className="authorization__registered link-opacity"
+          style={{ textAlign: "center" }}
+          onClick={handleVisibleChange}
+        >
+          Показать пароль
+        </h2>
         <button
           type="submit"
           className="authorization__button link-opacity save-profile"
