@@ -8,10 +8,8 @@ function EditProfilePopup({ isOpen, onClose, onUpdateUser }) {
   const [description, setDescription] = useState("");
 
   useEffect(() => {
-    if (currentUser !== {}) {
-      setName(currentUser.name);
-      setDescription(currentUser.about);
-    }
+    setName(currentUser.name);
+    setDescription(currentUser.about);
   }, [isOpen, currentUser]);
 
   function handleNameChange(e) {
@@ -44,7 +42,7 @@ function EditProfilePopup({ isOpen, onClose, onUpdateUser }) {
         className="popup__input"
         name="name"
         type="text"
-        placeholder={currentUser.name}
+        placeholder={"Имя"}
         value={name || ""}
         onChange={handleNameChange}
         autoComplete="off"
@@ -57,7 +55,7 @@ function EditProfilePopup({ isOpen, onClose, onUpdateUser }) {
         id="job-input"
         name="about"
         type="text"
-        placeholder={currentUser.about}
+        placeholder={"О себе"}
         value={description || ""}
         onChange={handleDescriptionChange}
         className="popup__input"

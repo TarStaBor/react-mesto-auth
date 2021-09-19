@@ -14,10 +14,20 @@ function InfoTooltip({ isInfoTooltipOpen, isSuccess, onClose }) {
           className="popup__close-button link-opacity"
           onClick={onClose}
         ></button>
-        <img src={isSuccess ? success : fail} style={{ paddingTop: 60 }} alt={isSuccess ? textSuccess : textFail} />
+        <img
+          src={isSuccess ? success : fail}
+          style={{ paddingTop: 60 }}
+          alt={isSuccess ? textSuccess : textFail}
+        />
         <h2
           className="popup__title"
-          style={{ textAlign: "center", padding: 0, marginLeft: 0, marginBottom: 60, marginTop: 32 }}
+          style={{
+            textAlign: "center",
+            padding: 0,
+            marginLeft: 0,
+            marginBottom: 60,
+            marginTop: 32,
+          }}
         >
           {isSuccess ? textSuccess : textFail}
         </h2>

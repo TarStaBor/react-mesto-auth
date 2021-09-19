@@ -1,17 +1,18 @@
 //Авторизация
 import React, { useState } from "react";
-import InfoTooltip from "./InfoTooltip";
-import { Link, Redirect } from "react-router-dom";
-import * as Auth from "./Auth";
 
-function Register({ isInfoTooltipOpen, onPost, onClose }) {
+import { Link } from "react-router-dom";
+
+function Register({ registrtion, isInfoTooltipOpen, onPost, onClose }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isSuccess, setIsSuccess] = useState(false);
+
   const [isVisiblePassword, setisVisiblePassword] = useState("password");
 
   function handleVisibleChange() {
-    setisVisiblePassword(isVisiblePassword === "password" ? "text" : "password");
+    setisVisiblePassword(
+      isVisiblePassword === "password" ? "text" : "password"
+    );
   }
 
   function handleEmailChange(e) {
@@ -24,25 +25,24 @@ function Register({ isInfoTooltipOpen, onPost, onClose }) {
 
   function handleSubmit(e) {
     e.preventDefault();
-    Auth.register(email, password).then((res) => {
-      if (res) {
-        onPost(true);
-        setIsSuccess(true);
-      } else {
-        onPost(true);
-        setIsSuccess(false);
-        setEmail("");
-        setPassword("");
-      }
-    });
+    registrtion(email, password)
+         setEmail("");                 
+         setPassword("");           
+
   }
 
   return (
-    <>
+
       <section className="authorization">
         <h2 className="authorization__title">Регистрация</h2>
 
-        <form name="" action="#" className="authorization__form" onSubmit={handleSubmit} noValidate>
+        <form
+          name=""
+          action="#"
+          className="authorization__form"
+          onSubmit={handleSubmit}
+          noValidate
+        >
           <input
             id="email"
             className="authorization__input"
@@ -78,7 +78,10 @@ function Register({ isInfoTooltipOpen, onPost, onClose }) {
             Показать пароль
           </h2>
 
-          <button type="submit" className="authorization__button link-opacity save-profile">
+          <button
+            type="submit"
+            className="authorization__button link-opacity save-profile"
+          >
             Зарегистрироваться
           </button>
         </form>
@@ -86,9 +89,6 @@ function Register({ isInfoTooltipOpen, onPost, onClose }) {
           Уже зарегистрированы? Войти
         </Link>
       </section>
-      {isSuccess && !isInfoTooltipOpen && <Redirect to="sign-in" />}
-      <InfoTooltip isInfoTooltipOpen={isInfoTooltipOpen} isSuccess={isSuccess} onClose={onClose} />
-    </>
-  );
-}
-export default Register;
+  )}
+  export default Register;
+

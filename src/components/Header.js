@@ -11,31 +11,29 @@ function Header({ userEmail }) {
   }
 
   return (
-    <>
-      <header className="header">
-        <img src={logo} className="header__logo" alt="Логотип 'Mesto Russia'" />
-        <Route path="/sign-in">
-          <Link className="header__link link-opacity" to="/sign-up">
-            Регистрация
-          </Link>
-        </Route>
+    <header className="header">
+      <img src={logo} className="header__logo" alt="Логотип 'Mesto Russia'" />
+      <Route path="/sign-in">
+        <Link className="header__link link-opacity" to="/sign-up">
+          Регистрация
+        </Link>
+      </Route>
 
-        <Route path="/sign-up">
-          <Link className="header__link link-opacity" to="/sign-in">
-            Войти
-          </Link>
-        </Route>
+      <Route path="/sign-up">
+        <Link className="header__link link-opacity" to="/sign-in">
+          Войти
+        </Link>
+      </Route>
 
-        <Route exact path="/">
-          <h2 className="header__link" style={{ marginLeft: "auto", marginRight: "24px" }}>
-            {userEmail}
-          </h2>
-          <Link className="header__link link-opacity" onClick={signOut} style={{ color: "#A9A9A9" }} to="/sign-in">
-            Выйти
-          </Link>
-        </Route>
-      </header>
-    </>
+      <Route exact path="/">
+        <h2 className="header__link" style={{ marginLeft: "auto", marginRight: "24px" }}>
+          {userEmail}
+        </h2>
+        <Link className="header__link link-opacity" onClick={signOut} style={{ color: "#A9A9A9" }} to="/sign-in">
+          Выйти
+        </Link>
+      </Route>
+    </header>
   );
 }
 

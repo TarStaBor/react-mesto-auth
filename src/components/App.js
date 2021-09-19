@@ -11,7 +11,9 @@ import { Route, Switch, useHistory } from "react-router-dom";
 import Register from "./Register";
 import Login from "./Login";
 import ProtectedRoute from "./ProtectedRoute";
-import * as Auth from "./Auth";
+import * as Auth from "../utils/Auth";
+import Footer from "./Footer";
+import InfoTooltip from "./InfoTooltip";
 
 function App() {
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
@@ -24,6 +26,18 @@ function App() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [userEmail, setUserEmail] = useState("");
   const history = useHistory();
+  const [isSuccess, setIsSuccess] = useState(false);
+
+  // Закрытие попапов по нажатию Escape
+  useEffect(() => {
+    const closeByEscape = (e) => {
+      if (e.key === "Escape") {
+        closeAllPopups();
+      }
+    };
+    document.addEventListener("keydown", closeByEscape);
+    return () => document.removeEventListener("keydown", closeByEscape);
+  }, []);
 
   // Получаем набор карточек и информацию о пользователе
   useEffect(() => {
@@ -51,6 +65,37 @@ function App() {
         });
     }
   }, [history]);
+
+  // Запрос к АПИ на регистрацию
+  function registrtion(email, password) {
+    Auth.register(email, password)
+      .then(() => {
+        setisInfoTooltipOpen(true);
+        setIsSuccess(true);
+        history.push("/sign-in");
+      })
+      .catch(() => {
+        setisInfoTooltipOpen(true);
+        setIsSuccess(false);
+      });
+  }
+
+  // Запрос к АПИ на авторизацию
+  function authorization(email, password) {
+    Auth.authorize(email, password)
+      .then((data) => {
+        if (data.token) {
+          localStorage.setItem("token", data.token);
+          setUserEmail(email);
+          setLoggedIn(true);
+          history.push("/");
+        }
+      })
+      .catch(() => {
+        setisInfoTooltipOpen(true);
+        setIsSuccess(false);
+      });
+  }
 
   // Добавление лайка
   function handleCardLike(card) {
@@ -129,10 +174,6 @@ function App() {
     setIsAddPlacePopupOpen(true);
   }
 
-  function handleInfoTooltipClick() {
-    setisInfoTooltipOpen(true);
-  }
-
   function handleCardClick(card) {
     setSelectedCard(card);
   }
@@ -167,28 +208,35 @@ function App() {
             ></ProtectedRoute>
 
             <Route path="/sign-up">
-              <Register
-                isInfoTooltipOpen={isInfoTooltipOpen}
-                onPost={handleInfoTooltipClick}
-                onClose={closeAllPopups}
-              />
+              <Register registrtion={registrtion} onClose={closeAllPopups} />
             </Route>
 
             <Route path="/sign-in">
-              <Login
-                isInfoTooltipOpen={isInfoTooltipOpen}
-                onPost={handleInfoTooltipClick}
-                onLoggedIn={setLoggedIn}
-                setUserEmail={setUserEmail}
-                onClose={closeAllPopups}
-              />
+              <Login authorization={authorization} onClose={closeAllPopups} />
             </Route>
           </Switch>
-
-          <PopupAvatar isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups} onUpdateAvatar={handleUpdateAvatar} />
-          <EditProfilePopup isOpen={isEditProfilePopupOpen} onClose={closeAllPopups} onUpdateUser={handleUpdateUser} />
-          <AddPlacePopup isOpen={isAddPlacePopupOpen} onClose={closeAllPopups} onAddPlace={handleAddPlaceSubmit} />
+          <Footer />
+          <PopupAvatar
+            isOpen={isEditAvatarPopupOpen}
+            onClose={closeAllPopups}
+            onUpdateAvatar={handleUpdateAvatar}
+          />
+          <EditProfilePopup
+            isOpen={isEditProfilePopupOpen}
+            onClose={closeAllPopups}
+            onUpdateUser={handleUpdateUser}
+          />
+          <AddPlacePopup
+            isOpen={isAddPlacePopupOpen}
+            onClose={closeAllPopups}
+            onAddPlace={handleAddPlaceSubmit}
+          />
           <ImagePopup card={selectedCard} onClose={closeAllPopups} />
+          <InfoTooltip
+            isInfoTooltipOpen={isInfoTooltipOpen}
+            isSuccess={isSuccess}
+            onClose={closeAllPopups}
+          />
         </div>
       </CurrentUserContext.Provider>
     </>
