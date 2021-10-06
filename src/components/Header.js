@@ -26,18 +26,10 @@ function Header({ userEmail }) {
       </Route>
 
       <Route exact path="/">
-        <h2
-          className="header__link"
-          style={{ marginLeft: "auto", marginRight: "24px" }}
-        >
+        <h2 className="header__link" style={{ marginLeft: "auto", marginRight: "24px" }}>
           {userEmail}
         </h2>
-        <Link
-          className="header__link link-opacity"
-          onClick={signOut}
-          style={{ color: "#A9A9A9" }}
-          to="/sign-in"
-        >
+        <Link className="header__link link-opacity" onClick={signOut} style={{ color: "#A9A9A9" }} to="/sign-in">
           Выйти
         </Link>
       </Route>

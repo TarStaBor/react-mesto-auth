@@ -174,10 +174,6 @@ function App() {
     setIsAddPlacePopupOpen(true);
   }
 
-  function handleInfoTooltipClick() {
-    setisInfoTooltipOpen(true);
-  }
-
   function handleCardClick(card) {
     setSelectedCard(card);
   }
