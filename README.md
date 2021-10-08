@@ -70,7 +70,7 @@
 
 ---
 
-# [Посмотреть работу ⬅️](https://tarstabor.github.io/react-mesto-auth)
+## [Посмотреть работу ⬅️](https://tarstabor.github.io/react-mesto-auth)
 
 
 
